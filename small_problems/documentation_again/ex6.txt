@@ -1,0 +1,4 @@
+The code prints:
+5
+8
+and then returns the initial integer that .step was called on (5)

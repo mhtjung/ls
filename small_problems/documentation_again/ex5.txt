@@ -1,0 +1,3 @@
+1. The first call throws an IndexError because the there is no index 7 (a.length < 7)
+2. The second call returns "beats me" because the second parameter passed in is used when the method cannot find the specified value.
+3. The third call returns the 49 because the block only executes when an invalid index is used. So, since 7 is used, we return 7**2.

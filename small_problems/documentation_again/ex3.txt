@@ -1,0 +1,24 @@
+1. Intuition answer
+The method should throw a 'Unexpected number of arguments' error. The method definition calls for 4 parameters, 2 with default values.
+The method call, however, only specifies 3 parameters.
+
+2. Actual answer
+According to https://ruby-doc.org/core-3.0.0/doc/syntax/calling_methods_rdoc.html, methods definitions can have default values in any order (unlike Python).
+When called, the method first fills the positional arguments, then the defaults are set, and finally any remaining parameters are set to the default values.
+Better Explanation:
+
+def my_method(a, b = 2, c = 3, d)
+  p [a, b, c, d]
+end
+
+my_method(4, 5, 6)
+
+first, 4 is assigned to a, then 6 is assigned to d (because neither a, nor d have default values). Then, since 5 is unassigned, it overwrites the first 
+default positional argument (b = 2), and then the final argument c, which hasn't been reassigned, retains its default argument. Hence the output:
+(4,5,3,6)
+
+Questions:
+
+  LOOK FOR A FORUM DISCUSSION REGARDING:
+  Why does Ruby assign 4 and 6 to a and d? Why doesn't it assign the arguments in the order they are passed and then assigned the remaining arguments to 
+  the default values?

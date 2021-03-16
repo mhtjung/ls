@@ -1,0 +1,4 @@
+1. Returns a default datetime object (-4712-01-01)
+2. Returns a datetime object with the year set to the 1st parameter (2016-01-01)
+3. Returns a datetime object with the year and month set to the 1st and 2nd parameter, respectively (2016-05-01)
+4. Returns a datetime object with the year, month, and day set to the 3 parameters (2016-05-13)

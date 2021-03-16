@@ -1,0 +1,1 @@
+File::path is a class method and therefore returns the path of the File class. File#path is an instance method and is used for objects created using the File class.

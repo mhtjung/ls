@@ -1,0 +1,37 @@
+1. A method that returns the sum of two integers
+
+START
+Start Loop
+  SET integer1 = GET integer1
+  SET integer2 = GET integer2
+  IF integer1 && integer2 are valid
+    result = integer1 + integer2
+    break
+  else
+    PRINT 'invalid input'
+End Loop
+PRINT result
+END
+
+2. A method that takes an array of strings and returns a new string
+that is all those strings concatenated together.
+
+START
+SET array = GET array_of_strings
+join array
+PRINT array
+END
+
+3. A method that takes an array of integers and returns a new array
+with every other element
+
+START
+SET array = GET array_of_ints
+for each item in the array
+  if index is even
+    pop! item
+  else
+    ignore
+  End
+PRINT array
+END

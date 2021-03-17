@@ -1,0 +1,5 @@
+It should return:
+Bob
+BOB 
+This happens because when the '!' is added to the String#upcase method, it is telling Ruby to perform the operation in-place otherwise known as 
+mutating the caller.

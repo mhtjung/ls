@@ -1,0 +1,3 @@
+We see the same behavior here as the previous exercise.
+The caller is being mutated (the elements represented by array1 are being changed in-place).
+Therfore, when we call puts array2, we see the mutated values.

@@ -5,7 +5,7 @@ def prompt(message)
   puts("=> #{message}")
 end
 
-def messages(msg,lang='en')
+def messages(msg, lang='en')
   MESSAGES[lang][msg]
 end
 
@@ -34,7 +34,7 @@ def get_monthly_interest
   loop do
     prompt(messages('get_monthly_interest'))
     mth_int = gets.chomp
-    return mth_int.to_f/12 if number?(mth_int)
+    return mth_int.to_f / 12 if number?(mth_int)
     prompt(messages('invalid_input'))
   end
 end
@@ -43,7 +43,7 @@ def get_loan_duration
   loop do
     prompt(messages('get_duration'))
     duration = gets.chomp
-    return duration.to_f*12 if number?(duration)
+    return duration.to_f * 12 if number?(duration)
     prompt(messages('invalid_input'))
   end
 end

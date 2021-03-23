@@ -1,0 +1,5 @@
+en:
+  get_principal: "Please enter the loan's principal"
+  get_monthly_interest: "Please enter the loan's APR using float notation(5% == 0.05)"
+  get_duration: "How long is this loan (in years?)"
+  invalid_input: "Invalid input - please try again!"

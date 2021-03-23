@@ -1,0 +1,20 @@
+
+en:
+  welcome: "Welcome to Calculator! Enter your name:"
+  valid_name: "Make sure to enter a valid name."
+  first_num: 'Please input the first of two numbers'
+  valid_num: "Invalid input! Please try again"
+  second_num: 'Please enter the second number'
+  operator_prompt: <<-MSG
+      What operation would you like to perform?
+      1) Add
+      2) Subtract
+      3) Multiply
+      4) Divide
+    MSG 
+  valid_operator: "Must choose 1, 2, 3, or 4."
+  again: 'Do you want to perform another operation! (y/n)'
+  bye: 'Thanks for stopping by!'
+es:
+  welcome: "Beinvenida a la calculadora! Entre su nombre:"
+  valid_name: "Asegurese de entrar nombre valido"

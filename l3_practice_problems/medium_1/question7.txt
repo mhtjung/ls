@@ -1,0 +1,2 @@
+The data is ransacked, because the mess_with_demographics method mutates the caller. To prevent this, Spot should have 
+assigned demo_hash to another variable so that he could mess with that new hash object.

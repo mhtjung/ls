@@ -1,0 +1,5 @@
+A while loop would be preferred.
+
+Bonus:
+1. The expression lets you know if there was a remainder after division
+2. Ensures that the method returns factors as the intended return value

@@ -1,0 +1,16 @@
+1. [1,2,3]
+2. 
+  1. Means 'not equal'. Can be used like a normal operator (+,-,=,etc)
+  2. Reverses the 'truthiness' of the object.
+  3. Usually indicates a destructive method
+  4. Indicates a conditional expression (? x : block of code)
+  5. Usually indicates a method that returns a boolean
+  6. Returns the boolean value (truthiness) of an expression
+3. advice.gsub!('important','urgent')
+4. The first expression deletes the element at index position 1. The second deletes the element 1.
+5. (10..100).cover?(42)
+6. 
+  1. famous_words += 'Four score and'
+  2. "Four score and" << famous_words
+7. flinstones.flatten!
+8. flinstones.assoc("Barney")

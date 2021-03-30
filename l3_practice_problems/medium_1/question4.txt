@@ -1,0 +1,4 @@
+The first method will mutate the caller because it uses a destructive method (#<<)
+The second will not mutate the variable because it 'input_array' is passed by reference and
+a new object ('buffer') is initialized and returned in the method.
+

@@ -1,0 +1,1 @@
+It will return 'nil' and throw an error that no such variable exists, because 'greeting' was defined within an if/else block and initialized to 'nil'

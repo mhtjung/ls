@@ -1,0 +1,2 @@
+It will output {:a=>'hi there'} because the variable assignment for informal_greeting set a reference to the original object 'greeting'
+When the << method is called on informal_greeting, it alters the object that informal_greeting was assigned to reference, thereby mutating the caller.

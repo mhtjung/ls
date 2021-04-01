@@ -1,0 +1,15 @@
+A.
+  One is one
+  Two is two
+  Three is Three
+B. 
+  One is one
+  Two is two
+  Three is Three
+  This method doesn't do anything with the parameters passed in, other than assigning new string objects to inner scope variables.
+C.
+  One is two
+  Two is Three
+  Three is one
+  This method uses g.sub! which is a destructive method to alter the objects that have been passed into the method.
+  

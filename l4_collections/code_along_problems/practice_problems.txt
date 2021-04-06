@@ -1,0 +1,11 @@
+1. [1, 2, 3]
+2. Count evaluates the truthiness of the block and counts those that return true
+3. [1, 2, 3] Because 'puts' returns 'nil', reject selects each value from the array passed in
+4. A hash with the format {'first_letter_of_value' => value}
+5. Removes the 'first' element in a hash; after 1.9, hashes are ordered by order of insertion, so it should remove the leftmost k/v pair
+6. pop returns 'caterpillar' so size is called on 'caterpillar' which is 11
+7. It should return 'true'. The block's return value is a boolean based on the current value of |num|. any? should return 'true' after the first
+   iteration, because any? simply checks for a 'true' value
+8. It selects and returns a number of values from an array. 
+9. [nil, 'bear'] because an if statement evaluates to 'nil' if none of its conditions are met, the first value in the array returned by map would be 'nil'
+10. [1, nil, nil]; the return value of puts is always 'nil'

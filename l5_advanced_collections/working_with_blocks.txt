@@ -1,0 +1,42 @@
+1. Example 3
+ - Map is called on the array; each inner array is passed to the code block as variable array
+  - The block prints the value at index position 0 (thanks to .first)
+  - The block then returns the value at index position 0 (thanks to arr.first)
+  - .map takes the return value, and inserts into a new array
+- After all iterations, .map returns the new array 
+
+2. Example 4
+- Early Prediction: this should assign [[18,7],[3,12]] to variable my_arr
+- .each is called on the main array (which has been assigned to variable my_arr); each inner array is 
+  assigned to variable arr
+  - .each is called on each inner array (arr) with each item from the array assigned to variable num
+  - if num > 5, it's printed to the screen
+- After all code block execution, the return value of .each should be the array that was 
+  originally called, so as per my prediction, my_arr == [[18,7],[3,12]]
+
+3. Example 5
+- Prediction: this should return [[2,4],[6,8]]
+- .map is called on the main array with each inner array being assigned to arr
+  -.map is called on each inner array, with its elements being assigned to num
+  - this inner .map statement returns an array based on the evaluated code block
+- the outer array takes the return value of the code block (in this case a new inner array)
+  and adds it to a new array which is then returned after execution. 
+
+4. Example 6
+- .select is called on the array, which two hashes. Each hash is passed to the code block as variable hash
+  -.all? is called on each hash, returning true only if
+    - the first letter of each value equals its key-symbol converted to a string
+- .select takes the return value of the code block each iteration and returns only the elements
+  for which the code block evaluated to 'true'
+
+5. Example 10
+- Prediction [[[2,3], [4,5]], [6,7]]
+- [[[1,2], [3,4]], [5,6]]
+- .map is called on the outer array, with each inner array assigned to arr
+  - .map is called on each inner array (arr) which returns a new array based on the code block's return value
+    and each element is assigned to 'el'
+    -  If the element is an integer, the .map method returns an array with each element incremented by 1
+    -  If the element is an array, .map is called on it, returning a new array with each value (n) incremented by 1
+  - this middle .map statement returns an array containing a transformed version of 'el'
+- this outer .map statements returns an array comprised of the returned arrays from the previous .map call
+

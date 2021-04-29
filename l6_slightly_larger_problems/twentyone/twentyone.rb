@@ -4,10 +4,18 @@ SUITS = ['Spades', 'Hearts', 'Diamonds', 'Clubs']
 TARGET = 21
 DEALER_HIT_THRESH = 17
 LINE = "============================================"
+
 def iniatilize_deck
   deck = []
   SUITS.each { |suit| CARD_VALUES.each { |card| deck << [card, suit] } }
   deck.shuffle
+end
+
+#creates a 5-deck 'shoe' of cards, as is typical of blackjack tables
+def initialize_shoe
+  shoe = []
+  5.times {shoe.concat(iniatilize_deck)}
+  shoe.shuffle
 end
 
 def prompt(msg)
@@ -116,7 +124,9 @@ end
 
 prompt "Welcome to Twenty-One!"
 prompt "The first player to 5 wins is the victor!"
-sleep(2)
+prompt "Would you like to play with a single deck or a normal shoe (5-decks)?"
+prompt "Press 's' for a shoe, any other key for a single deck."
+shoe_answer = gets.chomp
 dealer_score = 0
 player_score = 0
 
@@ -124,6 +134,7 @@ loop do
   loop do
     system 'clear'
     deck = iniatilize_deck
+    deck = initialize_shoe if shoe_answer.downcase[0] == 's'
     dealer_card_array = draw!(deck)
     player_card_array = draw!(deck)
     display_dlr_hand(dealer_card_array)

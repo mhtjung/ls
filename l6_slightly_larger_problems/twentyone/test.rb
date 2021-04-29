@@ -4,10 +4,19 @@ SUITS = ['Spades', 'Hearts', 'Diamonds', 'Clubs']
 TARGET = 21
 DEALER_HIT_THRESH = 17
 LINE = "============================================"
+
 def iniatilize_deck
   deck = []
   SUITS.each { |suit| CARD_VALUES.each { |card| deck << [card, suit] } }
   deck.shuffle
+end
+
+def initialize_shoe
+  shoe = []
+  5.times do 
+    shoe.concat(iniatilize_deck)
+  end
+  shoe.shuffle
 end
 
 def prompt(msg)
@@ -29,9 +38,9 @@ def display_plyr_hand(card_array)
 end
 
 def display_dlr_hand(card_array)
-  #prompt LINE
-  card1 = "#{card_array[0][0]} of #{card_array[0][1]}"
-  return prompt "Dealer has: #{card1} and a facedown card" if card_array.size == 2
+  prompt LINE
+  crd = "#{card_array[0][0]} of #{card_array[0][1]}"
+  return prompt "Dealer has: #{crd} and a facedown card" if card_array.size == 2
   card_arr_text = card_array.map { |inner| inner.join(' of ') }
   card_arr_text[-1] = "and #{card_arr_text.last}"
   prompt "Dealer has: #{card_arr_text.join(', ')}"
@@ -122,23 +131,18 @@ player_score = 0
 
 loop do
   loop do
-    player_total = 0
-    dealer_total = 0
     system 'clear'
-
     deck = iniatilize_deck
+    #deck = initialize_shoe
     dealer_card_array = draw!(deck)
     player_card_array = draw!(deck)
-    
     display_dlr_hand(dealer_card_array)
     display_plyr_hand(player_card_array)
     prompt "Your hand's value is #{get_sum(player_card_array)}"
-    # sends appropriate message if either/both hands contain natural blackjacks
     prompt blackjack_message(dealer_card_array, player_card_array)
 
     # checks if either player has a nat blackjack, increments respective score,
     # and exits game loop if either or both have natural blackjacks
-    # checks if dealer has blackjack and player does not
     if check_bj?(dealer_card_array) &&
        !check_bj?(player_card_array)
       dealer_score += 1
@@ -150,7 +154,7 @@ loop do
       break
     end
 
-    # breaks out of game loop if both players have blackjacks
+    # breaks out of game loop if both players have blackjacks (Push)
     break if check_bj?(player_card_array) &&
              check_bj?(dealer_card_array)
 
@@ -161,7 +165,6 @@ loop do
       player_card_array << hit!(deck)
       display_plyr_hand(player_card_array)
       prompt "Your hand's value is #{get_sum(player_card_array)}"
-      # breaks out of hit sequence if player busts
       break if check_bust?(player_card_array)
     end
 
@@ -180,21 +183,20 @@ loop do
 
     # Dealer hits until soft 17
     until get_sum(dealer_card_array) >= DEALER_HIT_THRESH
-      prompt LINE
       prompt "Dealer hits!"
-      sleep(1.25) # for readability/flow
+      sleep(1) # for readability/flow
       dealer_card_array << hit!(deck)
       display_dlr_hand(dealer_card_array)
       prompt "Dealer's new hand value is #{get_sum(dealer_card_array)}"
     end
 
-    sleep(1.25) # for readability/flow
-    # sends display_result output string to screen
+    sleep(1) # for readability/flow
     prompt(display_results(dealer_card_array, player_card_array))
     case display_results(dealer_card_array, player_card_array)
     when 'Dealer wins!'
       dealer_score += 1
     when 'Push!'
+      prompt "Nobody wins!"
     else
       player_score += 1
     end
@@ -204,6 +206,7 @@ loop do
   end
 
   # checks to see if there is an 'ultimate winner'
+  # breaks out of game loop if there is
   if dealer_score > 4
     prompt "The dealer has 5 wins! The dealer is the victor!"
     break
@@ -211,7 +214,7 @@ loop do
     prompt "You have 5 wins! You are the victor!"
     break
   end
-  break if play_again? == false
+  break if play_again? == false # Controls looping of game function
 end
 
 prompt "Thanks for playing!"

@@ -3,19 +3,19 @@ CARD_VALUES = ['Ace', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King']
 SUITS = ['Spades', 'Hearts', 'Diamonds', 'Clubs']
 TARGET = 21
 DEALER_HIT_THRESH = 17
+MAX_WINS = 5
 LINE = "============================================"
 
-def iniatilize_deck
+def initialize_deck
   deck = []
   SUITS.each { |suit| CARD_VALUES.each { |card| deck << [card, suit] } }
   deck.shuffle
 end
 
+# creates a 5-deck 'shoe' of cards, as is typical of blackjack tables
 def initialize_shoe
   shoe = []
-  5.times do 
-    shoe.concat(iniatilize_deck)
-  end
+  5.times { shoe.concat(initialize_deck) }
   shoe.shuffle
 end
 
@@ -46,22 +46,51 @@ def display_dlr_hand(card_array)
   prompt "Dealer has: #{card_arr_text.join(', ')}"
 end
 
-def check_bust?(card_array)
-  get_sum(card_array) > TARGET
+def player_hit?
+  prompt "Would you like to hit? Press Y to hit, any other key to stay."
+  answer = gets.chomp
+  answer.downcase[0] == 'y'
 end
 
-def check_bj?(card_array)
-  true if card_array.size == 2 && get_sum(card_array) == TARGET
+def hit!(deck)
+  deck.pop
 end
 
-def blackjack_message(dealer_card_array, player_card_array)
-  if check_bj?(player_card_array) && check_bj?(dealer_card_array)
+def display_results(dealer_total, player_total)
+  if dealer_total == player_total
+    "Push!"
+  elsif dealer_total > player_total &&
+        check_bust?(dealer_total) == false
+    "Dealer wins!"
+  elsif dealer_total > TARGET
+    "Dealer Busts! You win!"
+  else
+    "You win!"
+  end
+end
+
+def play_again?
+  prompt "Press any key to play another hand. Press 'n' to quit."
+  answer = gets.chomp
+  answer.downcase[0] != 'n'
+end
+
+def display_score(scores)
+  prompt "The score is You: #{scores[:player_score]} to PC: #{scores[:dealer_score]}"
+end
+
+def display_blackjack_message(dealer_total, player_total)
+  if dealer_total == TARGET && player_total == TARGET
     "Two Blackjacks! It's a push!"
-  elsif check_bj?(dealer_card_array)
+  elsif dealer_total == TARGET
     "Dealer has a Blackjack! You lose :("
-  elsif check_bj?(player_card_array)
+  elsif player_total == TARGET
     "Blackjack! You win!"
   end
+end
+
+def check_bj?(hand_total)
+  hand_total == TARGET
 end
 
 def convert_values(card_array)
@@ -88,133 +117,107 @@ def get_sum(card_array)
   hand_sum
 end
 
-def player_hit?
-  prompt "Would you like to hit? Press Y to hit, any other key to stay."
-  answer = gets.chomp
-  answer.downcase[0] == 'y'
+def check_bust?(hand_total)
+  hand_total > TARGET
 end
-
-def hit!(deck)
-  deck.pop
-end
-
-def display_results(dealer_card_array, player_card_array)
-  if get_sum(dealer_card_array) == get_sum(player_card_array)
-    "Push!"
-  elsif get_sum(dealer_card_array) > get_sum(player_card_array) &&
-        check_bust?(dealer_card_array) == false
-    "Dealer wins!"
-  elsif get_sum(dealer_card_array) > TARGET
-    "Dealer Busts! You win!"
-  else
-    "You win!"
-  end
-end
-
-def play_again?
-  prompt "Press any key to play another hand. Press 'n' to quit."
-  answer = gets.chomp
-  answer.downcase[0] != 'n'
-end
-
-def display_score(dealer_score, player_score)
-  prompt "The score is You: #{player_score} to PC: #{dealer_score}"
-end
-
 # game begins here
 
-prompt "Welcome to Twenty-One!"
-prompt "The first player to 5 wins is the victor!"
-sleep(2)
-dealer_score = 0
-player_score = 0
+def display_welcome_msg
+  prompt "Welcome to Twenty-One!"
+  prompt "The first player to 5 wins is the victor!"
+  prompt "Would you like to play with a single deck or a normal shoe (5-decks)?"
+  prompt "Press 's' for a shoe, any other key for a single deck."
+end
+
+display_welcome_msg
+shoe_answer = gets.chomp
+scores = {
+  player_score: 0,
+  dealer_score: 0
+}
 
 loop do
   loop do
     system 'clear'
-    deck = iniatilize_deck
-    #deck = initialize_shoe
+    deck = initialize_deck
+    deck = initialize_shoe if shoe_answer.downcase[0] == 's'
     dealer_card_array = draw!(deck)
     player_card_array = draw!(deck)
     display_dlr_hand(dealer_card_array)
     display_plyr_hand(player_card_array)
-    prompt "Your hand's value is #{get_sum(player_card_array)}"
-    prompt blackjack_message(dealer_card_array, player_card_array)
 
-    # checks if either player has a nat blackjack, increments respective score,
-    # and exits game loop if either or both have natural blackjacks
-    if check_bj?(dealer_card_array) &&
-       !check_bj?(player_card_array)
-      dealer_score += 1
-      display_score(dealer_score, player_score)
+    player_total = get_sum(player_card_array)
+    dealer_total = get_sum(dealer_card_array)
+
+    prompt "Your hand's value is #{player_total}"
+    prompt display_blackjack_message(dealer_total, player_total)
+
+    if check_bj?(dealer_total) &&
+       !check_bj?(player_total)
+      scores[:dealer_score] += 1
+      display_score(scores)
       break
-    elsif check_bj?(player_card_array)
-      player_score += 1
-      display_score(dealer_score, player_score)
+    elsif check_bj?(player_total)
+      scores[:player_score] += 1
+      display_score(scores)
       break
     end
 
-    # breaks out of game loop if both players have blackjacks (Push)
-    break if check_bj?(player_card_array) &&
-             check_bj?(dealer_card_array)
-
-    # player turn/hit sequence
+    break if check_bj?(player_total) &&
+             check_bj?(dealer_total)
+    # can't bust before this point
+    # card_array starts to be mutated
     until player_hit? == false
       system 'clear'
       display_dlr_hand(dealer_card_array)
       player_card_array << hit!(deck)
+      player_total = get_sum(player_card_array)
       display_plyr_hand(player_card_array)
-      prompt "Your hand's value is #{get_sum(player_card_array)}"
-      break if check_bust?(player_card_array)
+      prompt "Your hand's value is #{player_total}"
+      break if check_bust?(player_total)
     end
 
-    # delivers bust message to player if they busted and breaks out of game loop
-    if check_bust?(player_card_array)
+    if check_bust?(player_total)
       prompt "BUST! You lose :("
-      dealer_score += 1
-      display_score(dealer_score, player_score)
+      scores[:dealer_score] += 1
+      display_score(scores)
       break
     end
 
-    # If the player didn't bust, dealer turn/hit sequence begins
     prompt "Dealer's turn"
     display_dlr_hand(dealer_card_array)
-    prompt "Dealer's current hand value is #{get_sum(dealer_card_array)}"
+    prompt "Dealer's current hand value is #{dealer_total}"
 
-    # Dealer hits until soft 17
-    until get_sum(dealer_card_array) >= DEALER_HIT_THRESH
+    until dealer_total >= DEALER_HIT_THRESH
       prompt "Dealer hits!"
-      sleep(1) # for readability/flow
+      sleep(1)
       dealer_card_array << hit!(deck)
+      dealer_total = get_sum(dealer_card_array)
       display_dlr_hand(dealer_card_array)
-      prompt "Dealer's new hand value is #{get_sum(dealer_card_array)}"
+      prompt "Dealer's new hand value is #{dealer_total}"
     end
 
-    sleep(1) # for readability/flow
-    prompt(display_results(dealer_card_array, player_card_array))
-    case display_results(dealer_card_array, player_card_array)
+    sleep(1)
+    prompt(display_results(dealer_total, player_total))
+    case display_results(dealer_total, player_total)
     when 'Dealer wins!'
-      dealer_score += 1
+      scores[:dealer_score] += 1
     when 'Push!'
       prompt "Nobody wins!"
     else
-      player_score += 1
+      scores[:player_score] += 1
     end
-    display_score(dealer_score, player_score)
+    display_score(scores)
     break
-    # end of main game loop
   end
-
-  # checks to see if there is an 'ultimate winner'
-  # breaks out of game loop if there is
-  if dealer_score > 4
+  if scores[:dealer_score] == MAX_WINS
     prompt "The dealer has 5 wins! The dealer is the victor!"
     break
-  elsif player_score > 4
+  elsif scores[:player_score] == MAX_WINS
     prompt "You have 5 wins! You are the victor!"
     break
   end
-  break if play_again? == false # Controls looping of game function
+  break if play_again? == false
 end
 
 prompt "Thanks for playing!"

@@ -2,16 +2,15 @@
 # is an odd integer that is supplied as an argument to the method. You may
 # assume that the argument will always be an odd integer
 
-def generate_stars(n, dist_from_cent)
-  num = n - 2 * dist_from_cent
-  stars = '*' * num
-  puts stars.center(n)
+
+def generate_row(grid_size, dist_from_cent)
+  num_of_spaces = dist_from_cent - 1
+  spaces = ' ' * num_of_spaces
+  result = Array.new(3, '*').join(spaces)
+  puts result.center(grid_size)
 end
 
-def diamond(n)
-  max_distance = (n - 1)/2
-  max_distance.downto(0) {| x | generate_stars(n, x)}
-  1.upto(max_distance)   {|x| generate_stars(n, x)}
+def stars(number)
+  max_dist = (number - 1) / 2
+  max_dist.downto(1) { |dist| generate_row(number, dist)}
 end
-
-diamond(9)

@@ -1,0 +1,60 @@
+=begin
+Problem:
+Write a method that takes two arrays of integers of equal length
+  For each respective member, take the square of the absolute value difference
+
+Return the average of all the aforementioned differences
+
+accepts two integer arrays of equal length
+compares the value each member in one array to the corresponding member in the other
+squares the absolute value difference between those two values
+and returns the average of those squared absolute value difference between each member pair.
+
+Examples:
+
+  [1, 2, 3], [4, 5, 6]              -->   9   because (9 + 9 + 9) / 3
+[10, 20, 10, 2], [10, 25, 5, -2]  -->  16.5 because (0 + 25 + 25 + 16) / 4
+[-1, 0], [0, -1]                  -->   1   because (1 + 1) / 2
+
+Data Structures:
+Input: Array of Ints, Array of Ints,
+Return: Integer/Float (depending on the math)
+Output: N/A
+
+Algorithm:
+
+Initialize a holder array to store the absolute differences
+Initialize a counter object to 0
+
+Loop
+  Use the counter object as an index position to select the respective elements of each array
+  Determine their absolute val difference
+  Append this difference to the holder array
+  Increment counter object
+End Loop
+
+Use reduce to sum the squares
+
+Divide the sum by the input array length
+
+=end
+
+
+def my_function(arr1, arr2)
+  diffs = []
+  idx = 0
+  loop do
+    num1, num2 = arr1[idx], arr2[idx]
+    diff = num1 - num2
+    diffs << diff ** 2
+    break if diffs.size == arr1.size
+    idx += 1
+  end
+  sum = diffs.reduce(:+)
+  avg = sum/arr1.size
+  format('%.3f', avg)
+end
+
+p my_function([1, 2, 3], [4, 5, 6]) #== 9
+p my_function([10, 20, 10, 2], [10, 25, 5, -2]) == 16.5
+p my_function([-1, 0], [0, -1]) == 1

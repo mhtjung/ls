@@ -117,11 +117,13 @@ class Deck
     end
     cards.shuffle
   end
+
+  def reset
+    @cards = create_deck
+  end
 end
 
 class Player
-  include Borders
-
   attr_accessor :hand, :name
 
   def initialize
@@ -154,35 +156,26 @@ class Player
     hand.total > 21
   end
 
-  def discard_hand
+  def reset_hand
     @hand = Hand.new
   end
 end
 
 class Human < Player
-  include Borders
-
   def initialize
     @name = set_name
     super()
   end
 
-  def hit(deck)
-    @hand << deck.deal
-  end
-
-  def turn(deck)
-    choice = nil
+  def hit?
+    answer = nil
     loop do
-      choice = hit_or_stay
-      break if choice == :s
-      hit(deck) if choice == :h
-      break if busted?
+      puts "Would you like to hit or stay?"
+      answer = gets.chomp
+      break if ['h', 's'].include?(answer.downcase)
+      puts "Sorry, invalid input"
     end
-    unless busted?
-      print_content("You stay!")
-      sleep(1.5)
-    end
+    answer.downcase == 'h'
   end
 
   private
@@ -195,17 +188,6 @@ class Human < Player
       display_line "Sorry, invalid input!"
     end
     answer
-  end
-
-  def hit_or_stay
-    answer = nil
-    loop do
-      puts "Would you like to hit or stay?"
-      answer = gets.chomp
-      break if ['h', 's'].include?(answer.downcase)
-      puts "Sorry, invalid input"
-    end
-    answer.downcase.to_sym
   end
 end
 
@@ -222,58 +204,65 @@ class Dealer < Player
       super()
     end
   end
-
-  def puts_hand(symbol = nil)
-    spacer
-    h_border
-    print_content show_hand(symbol)
-    h_border
-  end
-
-  def turn(deck)
-    loop do
-      break if @hand.total >= 17
-      spacer
-      puts "Dealer hits until 17!"
-      hit(deck)
-      sleep(1)
-      puts_hand
-      sleep(1)
-      break if busted?
-    end
-    spacer
-    puts "Dealer stays!" unless busted?
-  end
 end
 
 class Game
   include Borders
 
-  def initialize
-    super()
-  end
-
   def play
-    initialization
+    object_initialization
     loop do
-      game_logic
+      initial_deal
+      break if blackjacks?
+      player_turns
+      display_results
       break unless play_again?
     end
+    display_results if blackjacks?
     goodbye_message
   end
 
   private
 
-  def game_logic
-    loop do
-      deal_cards
-      player_turns
-      break
-    end
-    display_results
+  def initial_deal
+    deal_cards
+    display_cards(:facedown)
+    checking_bj_msg
+    display_cards if blackjacks?
   end
 
-  def initialization
+  def dealer_turn
+    dealer_turn_messages
+    until @dealer.total >= 17
+      puts "Dealer hits until 17!"
+      sleep(0.75)
+      puts "Dealer hits!"
+      sleep(0.5)
+      @dealer.hit(@deck)
+      display_cards
+      break if @dealer.busted?
+    end
+  end
+
+  def dealer_turn_messages
+    puts "Dealers turn!"
+    sleep(1)
+    display_cards
+    puts "Dealer stands on 17!" if @dealer.total >= 17
+  end
+
+  def human_turn
+    loop do
+      break unless @human.hit?
+      @human.hit(@deck)
+      display_cards(:facedown)
+      break if @human.busted?
+    end
+    puts "You stay!"
+    sleep(1)
+  end
+
+  def object_initialization
     clear_screen
     greeting
     init_deck
@@ -309,13 +298,8 @@ class Game
   end
 
   def player_turns
-    display_cards(:facedown)
-    checking_bj_msg
-    display_cards if blackjacks?
-    return if blackjacks?
-    @human.turn(@deck)
-    display_cards
-    @dealer.turn(@deck) unless @human.busted?
+    human_turn
+    dealer_turn unless @human.busted?
   end
 
   def display_cards(symbol = nil)
@@ -334,14 +318,15 @@ class Game
   end
 
   def checking_bj_msg
+    interval = 0.2
     print 'Checking for blackjacks'
-    sleep(0.4)
+    sleep(interval)
     print '.'
-    sleep(0.4)
+    sleep(interval)
     print '.'
-    sleep(0.4)
+    sleep(interval)
     puts '.'
-    sleep(0.4)
+    sleep(interval)
   end
 
   def display_results
@@ -363,8 +348,8 @@ class Game
   end
 
   def reset_hands
-    @human.discard_hand
-    @dealer.discard_hand
+    @human.reset_hand
+    @dealer.reset_hand
   end
 
   def blackjack_results
@@ -393,5 +378,5 @@ class Game
   end
 end
 
-twentyone = Game.new
-twentyone.play
+game = Game.new
+game.play

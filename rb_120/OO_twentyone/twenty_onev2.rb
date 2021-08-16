@@ -19,21 +19,19 @@ module Borders
 
   def display_line(text)
     system('clear')
-    puts @h_border
-    puts @v_border
-    puts @v_border
-    puts content(text)
-    puts @v_border
-    puts @v_border
-    puts @h_border
-  end
-
-  def content(text)
-    "+#{text.center(98)}+"
+    h_border
+    2.times { v_border }
+    print_content(text)
+    2.times { v_border }
+    h_border
   end
 
   def print_content(text)
     puts content(text)
+  end
+
+  def content(text)
+    "+#{text.center(98)}+"
   end
 end
 
@@ -118,7 +116,7 @@ class Deck
     cards.shuffle
   end
 
-  def reset
+  def reset!
     @cards = create_deck
   end
 end
@@ -128,7 +126,6 @@ class Player
 
   def initialize
     @hand = Hand.new
-    super()
   end
 
   def show_hand
@@ -164,7 +161,6 @@ end
 class Human < Player
   def initialize
     @name = set_name
-    super()
   end
 
   def hit?
@@ -194,7 +190,6 @@ end
 class Dealer < Player
   def initialize
     @name = self.class.to_s
-    super()
   end
 
   def show_hand(symbol = nil)
@@ -212,17 +207,23 @@ class Game
   def play
     object_initialization
     loop do
-      initial_deal
-      break if blackjacks?
-      player_turns
+      turn_logic
       display_results
       break unless play_again?
     end
-    display_results if blackjacks?
     goodbye_message
   end
 
   private
+
+  def turn_logic
+    loop do
+      initial_deal
+      break if blackjacks?
+      player_turns
+      break
+    end
+  end
 
   def initial_deal
     deal_cards
@@ -237,7 +238,7 @@ class Game
       puts "Dealer hits until 17!"
       sleep(0.75)
       puts "Dealer hits!"
-      sleep(0.5)
+      sleep(0.75)
       @dealer.hit(@deck)
       display_cards
       break if @dealer.busted?

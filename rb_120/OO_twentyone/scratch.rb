@@ -20,11 +20,10 @@ module Borders
   end
 
   def print_content(text)
-    puts content(text)
+    puts "+#{text.center(98)}+"
   end
 
   def content(text)
-    "+#{text.center(98)}+"
   end
 end
 
@@ -56,7 +55,7 @@ class Card
   end
 end
 
-class Hand
+class Hand < Array
   attr_accessor :cards
 
   def initialize
@@ -215,11 +214,18 @@ end
 class Game
   include Borders
 
+  def test
+    h_border
+    v_border
+    print_content "Why the fuck does this work?"
+    v_border
+    h_border
+  end
+
   def initialize
     @deck = Deck.new
     @human = Human.new
     @dealer = Dealer.new
-    super()
   end
 
   def play
@@ -335,7 +341,6 @@ class Game
   end
 
   def display_results
-    sleep(1)
     blackjack_results
     busted_results if !blackjacks?
     total_results if !blackjacks?
@@ -392,4 +397,4 @@ class Game
 end
 
 game = Game.new
-game.play
+game.test
